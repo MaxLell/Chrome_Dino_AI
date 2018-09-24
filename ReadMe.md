@@ -3,7 +3,7 @@ AI learns to play Google Chrome Dinosaur Game
 
 Overview
 ============
-This package contains two Versions of Google Chrome's famous Dino Game. One Version can be played by Humans (Run Human_Dino_Game.py). The other version trains and plays itself by Reinforcement Learning. Its core algorithm is based on Neuro-Evolution Algorithms (Genetic Algorithms applied on Neural Networks).
+This package contains two Versions of Google Chrome's famous Dino Game. One Version can be played by Humans (Run Human_Dino_Game.py). The other version trains and plays itself by Reinforcement Learning (Run Auto_Dino_Game.py). Its core algorithm is based on Neuro-Evolution Algorithms (Genetic Algorithms applied on Neural Networks).
 (The Human version is operable, but still requires some polishing.)
 
 Dependencies:
