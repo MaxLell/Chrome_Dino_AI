@@ -53,8 +53,8 @@ class DinoGame():
             self.generation = 0
             self.active_dinos, self.all_dinos = ga.create_new_population(self.population)
 
-    def reset_game(self):
-        self.__init__(first_init = False)
+    def reset_game(self, flag):
+        self.__init__(first_init = flag)
 
     def add_clouds(self):
         self.clouds.append(Cloud())
@@ -198,7 +198,7 @@ class DinoGame():
             self.high_score.append(self.game_score)
 
             # Reset game environment
-            self.reset_game()
+            self.reset_game(flag = False)
 
             # calcualte fitness for each dino
             self.all_dinos = ga.calculate_fitness(self.all_dinos)
@@ -216,12 +216,17 @@ class DinoGame():
         # Mass extinction - The previous population did never get fit enough
         # lets bring in the meteor!! + create a new population, which is propably
         # fitter - if not ... well you know the game
+        # 30% of the populations do not evolve over longer periods of time
+        # --> Threshold at 80 generations.
         if len(self.high_score) > 0:
-            if max(self.high_score) < 10000 and self.generation > 150:
+            if max(self.high_score) < 10000 and self.generation >= 80:
 
                 # Reset game environment
-                self.reset_game()
+                self.reset_game(flag = True)
+
                 # create a new dino population
+                self.active_dinos = []
+                self.all_dinos = []
                 self.generation = 0
                 self.active_dinos, self.all_dinos = ga.create_new_population(self.population)
 
