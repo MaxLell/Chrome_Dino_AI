@@ -15,36 +15,41 @@ class DinoGame():
 
         self.game_score = 0
 
-        self.cloud_counter    = 0
+        # game incrementors
+        self.cloud_counter    = 50
+        self.cloud_threshold    = np.random.randint(60,100)
         self.obstacle_counter = 0
         self.obstacle_threshold = np.random.randint(70,90)
         self.speed_counter = 0
 
+        # game object lists
         self.obstacles  = []
         self.grounds    = []
         self.clouds     = []
 
+        # Gamespeed
         self.vel        = 15
 
-        self.population = 100
+        self.population = 150
 
         self.add_obstacle()
 
         if first_init == True:
             pg.init()
 
-            # Screen resolution and window title
+            # Set screen parameters
             self.disp_x     = 800
             self.disp_y     = 350
             self.FPS        = 60
             pg.display.set_caption('Dino_game')
             self.window     = pg.display.set_mode((self.disp_x, self.disp_y))
+            self.render_flag = False
 
             self.clock      = pg.time.Clock()
 
             self.high_score = []
 
-            # create dino population
+            # create a new dino population
             self.generation = 0
             self.active_dinos, self.all_dinos = ga.create_new_population(self.population)
 
@@ -65,7 +70,7 @@ class DinoGame():
             self.grounds.append(Ground(1200, self.vel))
 
     def add_obstacle(self):
-        r = random.randrange(0,3)
+        r = random.randrange(0,4)
         if r < 2:
             self.obstacles.append(Cactus(vel = self.vel))
         else:
@@ -108,11 +113,23 @@ class DinoGame():
     def step(self):
 
         # 60 FPS
-        self.clock.tick(60)
+        if self.render_flag:
+            self.clock.tick(self.FPS)
+        # if not self.render_flag:
+        #     self.clock.tick(1000000)
 
         # Prevent Window from freezing, when dragging screen
         for event in pg.event.get():
             if event.type == pg.QUIT:
+                self.close()
+
+            key = pg.key.get_pressed()
+            if key[pg.K_SPACE]:
+                if self.render_flag == False:
+                    self.render_flag = True
+                else:
+                    self.render_flag = False
+            if key[pg.K_ESCAPE]:
                 self.close()
 
         # increment counters
@@ -135,10 +152,12 @@ class DinoGame():
         # move obstacle
         self.update_obstacles()
 
-        # check obstacle collision multiple times! <- pygame bug
-        # or implementation bug
+        # check obstacle collision 3 times! <- pygame bug or implementation bug
+        # Only one collision check results in letting some dinos of a population
+        # survive obstacle contact, even thought the population is heavily
+        # decimated (usually 1 or 2 survive)
 
-        # 1. Collsion Check
+        # 1. Collision Check
         if len(self.obstacles) != 0:
             for obstacle in self.obstacles:
                 for dino in self.active_dinos:
@@ -149,7 +168,7 @@ class DinoGame():
 
         for dino in self.active_dinos:
 
-            # 2. Collsion Check
+            # 2. Collision Check
             dino_collided = dino.collide(self.obstacles)
 
             if dino_collided:
@@ -164,14 +183,13 @@ class DinoGame():
             # Dinos act
             dino.update(action)
 
-            # 3. Collsion Check
+            # 3. Collision Check
             if len(self.obstacles) != 0:
                 for obstacle in self.obstacles:
                     for dino in self.active_dinos:
                         obstacle_collided = obstacle.collide(dino)
                         if obstacle_collided:
                             self.active_dinos.pop(self.active_dinos.index(dino))
-
 
         # All Dinos died -> Lets reproduce and generate a new generation!
         if len(self.active_dinos) == 0:
@@ -192,51 +210,75 @@ class DinoGame():
             # mate and set up the next generation!
             self.all_dinos, self.active_dinos = ga.create_next_generation(self.population, dino_mating_pool)
 
-            # increment genaration counter
+            # increment generation counter
             self.generation += 1
 
-    def render(self):
-        # Background
-        self.window.fill((236,240,241))
-
-        if (self.cloud_counter % 100) == 0:
-            self.add_clouds()
-            self.cloud_counter = 0
-
-        self.add_ground()
-
-        self.update_clouds()
-        self.update_ground()
-
-        # Grounds
-        for i in self.grounds:
-            i.draw(self.window)
-
-        # Clouds
-        for i in self.clouds:
-            i.draw(self.window)
-
-        # Obstacles
-        for i in self.obstacles:
-            i.draw(self.window)
-
-        # Dinos
-        for i in self.active_dinos:
-            i.draw(self.window)
-
-        # high_score
-
-        font = pg.font.SysFont('arial', 15)
-        g_c = font.render('Current Score: ' + str(self.game_score), True, (0,0,0))
-        self.window.blit(g_c, (580,10))
-        d_a = font.render('Dinos alive : ' + str(len(self.active_dinos)), True, (0,0,0))
-        self.window.blit(d_a, (10,10))
-        gen = font.render('Generation: ' + str(self.generation), True, (0,0,0))
-        self.window.blit(gen, (200,10))
+        # Mass extinction - The previous population did never get fit enough
+        # lets bring in the meteor!! + create a new population, which is propably
+        # fitter - if not ... well you know the game
         if len(self.high_score) > 0:
-            high = font.render('Total Highscore: ' + str(max(self.high_score)), True, (0,0,0))
-            self.window.blit(high, (370,10))
+            if max(self.high_score) < 10000 and self.generation > 150:
 
+                # Reset game environment
+                self.reset_game()
+                # create a new dino population
+                self.generation = 0
+                self.active_dinos, self.all_dinos = ga.create_new_population(self.population)
+
+    def render(self):
+        font = pg.font.SysFont('arial', 15)
+        if self.render_flag:
+            # Background
+            self.window.fill((236,240,241))
+
+            if self.cloud_counter == self.cloud_threshold:
+                self.add_clouds()
+                self.cloud_threshold = np.random.randint(70,120)
+                self.cloud_counter = 0
+
+            self.add_ground()
+            self.update_clouds()
+            self.update_ground()
+
+            # Grounds
+            for i in self.grounds:
+                i.draw(self.window)
+
+            # Clouds
+            for i in self.clouds:
+                i.draw(self.window)
+
+            # Obstacles
+            for i in self.obstacles:
+                i.draw(self.window)
+
+            # Dinos
+            for i in self.active_dinos:
+                i.draw(self.window)
+
+            # high_score
+            g_c = font.render('Current Score: ' + str(self.game_score), True, (0,0,0))
+            self.window.blit(g_c, (580,10))
+            d_a = font.render('Dinos alive : ' + str(len(self.active_dinos)), True, (0,0,0))
+            self.window.blit(d_a, (10,10))
+            gen = font.render('Generation: ' + str(self.generation), True, (0,0,0))
+            self.window.blit(gen, (200,10))
+            if len(self.high_score) > 0:
+                high = font.render('Total Highscore: ' + str(max(self.high_score)), True, (0,0,0))
+                self.window.blit(high, (370,10))
+        else:
+            self.window.fill((236,240,241))
+            bla = font.render('Press SPACE to toggle Game-Rendering', True, (0,0,0))
+            a = 135
+            b = 285
+            self.window.blit(bla, (b,a))
+            g_c = font.render('Current Score: ' + str(self.game_score), True, (0,0,0))
+            self.window.blit(g_c, (b,a+20))
+            gen = font.render('Generation: ' + str(self.generation), True, (0,0,0))
+            self.window.blit(gen, (b,a+40))
+            if len(self.high_score) > 0:
+                high = font.render('Total Highscore: ' + str(max(self.high_score)), True, (0,0,0))
+                self.window.blit(high, (b,a+60))
         pg.display.update()
 
     def close(self):

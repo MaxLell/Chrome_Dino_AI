@@ -60,7 +60,7 @@ class Ptera(Obstacle):
         self.frame   = 0
 
         # Property Section
-        self.y = random.randrange(100, 220)
+        self.y = random.randrange(60, 220)
         self.color = (44,62,80)
         self.height  = int(self.img[0].get_height() * 2/3)
         self.width   = int(self.img[0].get_width() * 2/3)

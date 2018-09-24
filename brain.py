@@ -10,10 +10,10 @@ class Dino_Brain():
         self.n_y = 3
 
         # Random Initialize Weights and Biases
-        self.W1 = np.random.randn(self.n_h, self.n_x)
-        self.b1 = np.random.randn(self.n_h, 1)
-        self.W2 = np.random.randn(self.n_y, self.n_h)
-        self.b2 = np.random.randn(self.n_y, 1)
+        self.W1 = np.random.randn(self.n_h, self.n_x) * 0.1
+        self.b1 = np.random.randn(self.n_h, 1) * 0.1
+        self.W2 = np.random.randn(self.n_y, self.n_h) * 0.1
+        self.b2 = np.random.randn(self.n_y, 1) * 0.1
 
     def think_about_action(self, x):
 

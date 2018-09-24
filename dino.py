@@ -53,7 +53,7 @@ class Dino(object):
 
         observation_dict['dino_y'] = self.y / 400
         observation_dict['dino_y_vel'] = self.jump_count / 30
-        observation_dict['bias'] = np.random.randn()
+        observation_dict['bias'] = np.random.randn() * 0.1
 
         # place values in numpy array
         observation = np.array([observation_dict['distance_dino_obstcl_x'],
@@ -71,7 +71,7 @@ class Dino(object):
 
     def mate(self, sexy_dino_girl): # Crossover
         # split genome in half - one half from father, one half from mother
-        # incredible sexy time
+        # have incredible sexy time
 
         # if you do not generate a deep copy of these variables
         # the values do never get mutated -> the evolution stagnates.
@@ -87,9 +87,9 @@ class Dino(object):
                 for j in range(orig_shape[1]):
                     if np.random.random() < 0.1:
                         S[i,j] += np.random.randn() * 0.5
-            return S.reshape(orig_shape) # np.arrays are mutable; return only for better readability
 
-        # create a small variation in child_brain
+            return S.reshape(orig_shape)
+
         W1 = mutate(W1)
         b1 = mutate(b1)
         W2 = mutate(W2)
@@ -97,6 +97,7 @@ class Dino(object):
 
         child = Dino()
 
+        # create a small variation in child_brain
         child.brain.W1 = W1
         child.brain.b1 = b1
         child.brain.W2 = W2
@@ -118,7 +119,7 @@ class Dino(object):
 
         # Duck
         if action == 1 and not self.is_jumping:
-            self.score     -= 2
+            self.score     -= 0.1 # Punish permanent ducking
             self.height     = 40
             self.width      = 79
             self.y          = 260
@@ -128,7 +129,7 @@ class Dino(object):
             self.is_jumping = True
 
         if self.is_jumping:
-            self.score -= 2
+            self.score -= 2 # Punish permaent jumping
             self.width = 59
             self.height = 63
             if self.jump_count >= -10:
