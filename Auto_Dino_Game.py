@@ -53,8 +53,8 @@ class DinoGame():
             self.generation = 0
             self.active_dinos, self.all_dinos = ga.create_new_population(self.population)
 
-    def reset_game(self, flag):
-        self.__init__(first_init = flag)
+    def reset_game(self, complete_init_flag):
+        self.__init__(first_init = complete_init_flag)
 
     def add_clouds(self):
         self.clouds.append(Cloud())
@@ -115,8 +115,6 @@ class DinoGame():
         # 60 FPS
         if self.render_flag:
             self.clock.tick(self.FPS)
-        # if not self.render_flag:
-        #     self.clock.tick(1000000)
 
         # Prevent Window from freezing, when dragging screen
         for event in pg.event.get():
@@ -137,18 +135,18 @@ class DinoGame():
         self.obstacle_counter += 1
         self.cloud_counter += 1
         self.game_score += 1
+        
+        # increase Gamespeed
+        if self.speed_counter % 1500 == 0:
+            self.vel += 1
+            self.speed_counter = 0
 
         # Add new obstacle
         if self.obstacle_counter == self.obstacle_threshold:
             self.add_obstacle()
             self.obstacle_counter = 0
             self.obstacle_threshold = np.random.randint(40,60)
-
-        # increase Gamespeed
-        if self.speed_counter % 1500 == 0:
-            self.vel += 1
-            self.speed_counter = 0
-
+            
         # move obstacle
         self.update_obstacles()
 
@@ -198,7 +196,7 @@ class DinoGame():
             self.high_score.append(self.game_score)
 
             # Reset game environment
-            self.reset_game(flag = False)
+            self.reset_game(complete_init_flag = False)
 
             # calcualte fitness for each dino
             self.all_dinos = ga.calculate_fitness(self.all_dinos)
@@ -220,15 +218,15 @@ class DinoGame():
         # --> Threshold at 80 generations.
         if len(self.high_score) > 0:
             if max(self.high_score) < 10000 and self.generation >= 80:
-
-                # Reset game environment
-                self.reset_game(flag = True)
-
-                # create a new dino population
+                
+                # wipe out current population <- Meteor
                 self.active_dinos = []
                 self.all_dinos = []
-                self.generation = 0
-                self.active_dinos, self.all_dinos = ga.create_new_population(self.population)
+
+                # Reset game environment and 
+                # generates a completly new population
+                self.reset_game(complete_init_flag = True)
+
 
     def render(self):
         font = pg.font.SysFont('arial', 15)
