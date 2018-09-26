@@ -2,7 +2,7 @@
 # "The Nature of Code - Chapter 9: Genetic Algorithms"
 
 import numpy as np
-from dino import *
+from Dino import *
 
 # Step 1
 def create_new_population(population):

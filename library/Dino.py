@@ -1,9 +1,9 @@
 import pygame as pg
-from brain import Dino_Brain
+from Brain import Dino_Brain
 import numpy as np
 import os
 
-class Dino(object):
+class Dino():
 
     def __init__(self):
 
