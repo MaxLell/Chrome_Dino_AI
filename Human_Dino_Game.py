@@ -20,12 +20,16 @@ class Human_Dino_Game(DinoGame):
         if keys[pg.K_ESCAPE]:
             self.close()
 
+        # Jump
         elif keys[pg.K_SPACE]:
             action = 2
 
+
+        # Duck
         elif keys[pg.K_DOWN]:
             action = 1
 
+        # Run
         else:
             action = 0
 

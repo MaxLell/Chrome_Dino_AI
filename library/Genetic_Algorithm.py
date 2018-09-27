@@ -41,7 +41,7 @@ def create_mating_pool(all_dinos):
 
     mating_pool = []
     for dino in all_dinos:
-        f = int(dino.fitness * len(all_dinos) * 7)
+        f = int(dino.fitness * len(all_dinos) * 10)
         for i in range(f):
             mating_pool.append(dino)
 
@@ -64,7 +64,7 @@ def create_next_generation(population, dino_mating_pool):
         b = np.random.randint(0, len(dino_mating_pool))
 
         # Crossover and Mutation in the dino.mate function
-        child = dino_mating_pool[a].mate(dino_mating_pool[b])
+        child = dino_mating_pool[a].crossover(dino_mating_pool[b])
 
         all_dinos.append(child)
         active_dinos.append(child)

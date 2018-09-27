@@ -7,7 +7,6 @@ from sys import exit
 from Dino import *
 from Obstacles import *
 from Background import *
-import Genetic_Algorithm as ga
 
 class DinoGame():
     def __init__(self):

@@ -29,6 +29,7 @@ class Dino():
 
         # Init Dino Brain
         self.brain = Dino_Brain()
+        self.mutation_rate = 0.05
 
         self.jump_count = 10
 
@@ -69,7 +70,7 @@ class Dino():
         action = self.brain.think_about_action(observation)
         return action
 
-    def mate(self, sexy_dino_girl): # Crossover
+    def crossover(self, sexy_dino_girl): # Crossover
         # split genome in half - one half from father, one half from mother
         # have incredible sexy time
 
@@ -85,7 +86,7 @@ class Dino():
             orig_shape = S.shape
             for i in range(orig_shape[0]):
                 for j in range(orig_shape[1]):
-                    if np.random.random() < 0.1:
+                    if np.random.random() < self.mutation_rate:
                         S[i,j] += np.random.randn() * 0.5
 
             return S.reshape(orig_shape)
