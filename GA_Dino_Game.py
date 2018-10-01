@@ -6,7 +6,7 @@ from Dino_Game import *
 import Genetic_Algorithm as ga
 
 class GA_Dino_Game(DinoGame):
-    
+
     def __init__(self, first_init = True):
         super().__init__()
 
@@ -175,8 +175,8 @@ class GA_Dino_Game(DinoGame):
         font = pg.font.SysFont('arial', 15)
         self.window.fill((236,240,241))
         if self.render_flag:
-            # Rendering Screen
 
+            # Rendering Screen
             if self.cloud_counter == self.cloud_threshold:
                 self.add_clouds()
                 self.cloud_threshold = np.random.randint(70,120)
@@ -253,12 +253,12 @@ class GA_Dino_Game(DinoGame):
         apex_dino_properties['W2'] = apex_dino.brain.W2
         apex_dino_properties['b2'] = apex_dino.brain.b2
 
-        np.save('apex_dino.npy', apex_dino_properties)
+        np.save('save/apex_dino.npy', apex_dino_properties)
 
     def load_model(self):
         self.reset_game(True)
 
-        apex_dino_properties = np.load('apex_dino.npy')[()]
+        apex_dino_properties = np.load('save/apex_dino.npy')[()]
 
         for dino in self.all_dinos:
             dino.brain.W1 = apex_dino_properties['W1']
