@@ -46,7 +46,6 @@ class DinoGame():
 
         if len(self.grounds) == 0:
             self.grounds.append(Ground(0, self.vel))
-
             self.grounds.append(Ground(1200, self.vel))
 
         if len(self.grounds) == 1:
@@ -103,4 +102,5 @@ class DinoGame():
 
         pg.display.quit()
         pg.quit()
+        print(self.game_score)
         exit()

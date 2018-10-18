@@ -68,7 +68,7 @@ class GA_Dino_Game(DinoGame):
         self.game_score += 1
 
         # increase Gamespeed
-        if self.speed_counter % 1500 == 0:
+        if self.speed_counter % 1000 == 0:
             self.vel += 1
             self.speed_counter = 0
 
@@ -97,16 +97,16 @@ class GA_Dino_Game(DinoGame):
         for dino in self.active_dinos:
 
             # 2. Collision Check
-            dino_collided = dino.collide(self.obstacles)
-
-            if dino_collided:
-                self.active_dinos.pop(self.active_dinos.index(dino))
+            for obstacle in self.obstacles:
+                obstacle_collided = obstacle.collide(dino)
+                if obstacle_collided:
+                    self.active_dinos.pop(self.active_dinos.index(dino))
 
             # Dinos sense enviroment
             observation = dino.sense_environment(self.obstacles)
 
             # Dinos think about what they've seen and select an action
-            action = dino.think(observation)
+            action = dino.brain.think_about_action(observation)
 
             # Dinos act
             dino.update(action)
@@ -157,14 +157,14 @@ class GA_Dino_Game(DinoGame):
                 # generates a completly new population
                 self.reset_game(complete_init_flag = True)
 
-            # Want to save the best model?
+            # Want to save the best model? --> Press "s"
             if self.save_flag:
                 self.save_flag = False
                 self.save_model()
                 self.save_draw_flag = True
                 self.save_render_counter = 100
 
-        # Want to load the previously saved model?
+        # Want to load the previously saved model? --> Press "l"
         if self.load_flag:
             self.load_flag = False
             self.load_model()
@@ -256,16 +256,19 @@ class GA_Dino_Game(DinoGame):
         np.save('save/apex_dino.npy', apex_dino_properties)
 
     def load_model(self):
+
         self.reset_game(True)
 
         apex_dino_properties = np.load('save/apex_dino.npy')[()]
 
+        # all dinos
         for dino in self.all_dinos:
             dino.brain.W1 = apex_dino_properties['W1']
             dino.brain.b1 = apex_dino_properties['b1']
             dino.brain.W2 = apex_dino_properties['W2']
             dino.brain.b2 = apex_dino_properties['b2']
 
+        # active dinos
         for dino in self.active_dinos:
             dino.brain.W1 = apex_dino_properties['W1']
             dino.brain.b1 = apex_dino_properties['b1']

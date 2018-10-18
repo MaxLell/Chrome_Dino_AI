@@ -24,7 +24,6 @@ class Human_Dino_Game(DinoGame):
         elif keys[pg.K_SPACE]:
             action = 2
 
-
         # Duck
         elif keys[pg.K_DOWN]:
             action = 1
@@ -51,7 +50,7 @@ class Human_Dino_Game(DinoGame):
         self.game_score += 1
 
         # increase Gamespeed
-        if self.speed_counter % 1500 == 0:
+        if self.speed_counter % 1000 == 0:
             self.vel += 1
             self.speed_counter = 0
 
@@ -68,9 +67,10 @@ class Human_Dino_Game(DinoGame):
 
         self.dino.update(action)
 
-        dino_collided = self.dino.collide(self.obstacles)
-        if dino_collided:
-            self.close()
+        for obstacle in self.obstacles:
+            obstacle_collided = obstacle.collide(self.dino)
+            if obstacle_collided:
+                self.close()
 
         self.game_score += 1
 
@@ -116,8 +116,6 @@ if __name__ == '__main__':
     # main
     env = Human_Dino_Game()
     while True:
-
         env.step()
         env.render()
-
     env.close()

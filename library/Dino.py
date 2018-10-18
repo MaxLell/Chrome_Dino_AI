@@ -65,11 +65,6 @@ class Dino():
 
         return observation
 
-    def think(self, observation):
-        # observations (inputs) --> FeedForward_NN --> actions
-        action = self.brain.think_about_action(observation)
-        return action
-
     def crossover(self, sexy_dino_girl): # Crossover
         # split genome in half - one half from father, one half from mother
         # have incredible sexy time
@@ -110,7 +105,7 @@ class Dino():
         # update the dino's state according to the selected action
 
         # increment dino score
-        self.score += 1
+        self.score += 0.2
 
         # Run
         if action == 0 and not self.is_jumping:
@@ -130,7 +125,7 @@ class Dino():
             self.is_jumping = True
 
         if self.is_jumping:
-            self.score -= 2 # Punish permaent jumping
+            self.score -= 0.5 # Punish permaent jumping
             self.width = 59
             self.height = 63
             if self.jump_count >= -10:
@@ -145,23 +140,6 @@ class Dino():
                 self.width = 59
                 self.height = 63
                 self.y = 237
-
-    def collide(self, obstacles):
-        # Check whether the dino has collided with an obstacle
-
-        if len(obstacles) != 0:
-            if pg.Rect(self.x,
-                       self.y,
-                       self.width,
-                       self.height).colliderect(pg.Rect(obstacles[0].x,
-                                                        obstacles[0].y,
-                                                        obstacles[0].width,
-                                                        obstacles[0].height)):
-                return True
-            else:
-                return False
-        else:
-            return False
 
     def draw(self, window):
 
