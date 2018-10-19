@@ -9,6 +9,7 @@ from Obstacles import *
 from Background import *
 
 class DinoGame():
+    
     def __init__(self):
 
         # Set screen parameters
@@ -46,10 +47,10 @@ class DinoGame():
 
         if len(self.grounds) == 0:
             self.grounds.append(Ground(0, self.vel))
-            self.grounds.append(Ground(1200, self.vel))
+            self.grounds.append(Ground(self.disp_x, self.vel))
 
         if len(self.grounds) == 1:
-            self.grounds.append(Ground(1200, self.vel))
+            self.grounds.append(Ground(self.disp_x, self.vel))
 
     def add_obstacle(self):
         r = random.randrange(0,4)

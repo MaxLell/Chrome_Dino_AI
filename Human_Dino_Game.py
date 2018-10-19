@@ -6,6 +6,7 @@ from Dino_Game import *
 from Dino import *
 
 class Human_Dino_Game(DinoGame):
+
     def __init__(self):
         super().__init__()
 
@@ -47,7 +48,9 @@ class Human_Dino_Game(DinoGame):
         self.speed_counter += 1
         self.obstacle_counter += 1
         self.cloud_counter += 1
-        self.game_score += 1
+
+        if self.speed_counter % 4 == 0:
+            self.game_score += 1
 
         # increase Gamespeed
         if self.speed_counter % 1000 == 0:
@@ -63,16 +66,17 @@ class Human_Dino_Game(DinoGame):
         # move obstacle
         self.update_obstacles()
 
+        # read action from keyboard
         action = self.action_from_keyboard()
 
+        # act
         self.dino.update(action)
 
+        # Collision checks
         for obstacle in self.obstacles:
             obstacle_collided = obstacle.collide(self.dino)
             if obstacle_collided:
                 self.close()
-
-        self.game_score += 1
 
     def render(self):
 
@@ -105,7 +109,6 @@ class Human_Dino_Game(DinoGame):
         self.dino.draw(self.window)
 
         # Score
-        self.game_score += 1
         font = pg.font.SysFont('arial', 15)
         text = font.render('Score: ' + str(self.game_score), True, (0,0,0))
         self.window.blit(text, (580,10))

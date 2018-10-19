@@ -65,7 +65,9 @@ class GA_Dino_Game(DinoGame):
         self.speed_counter += 1
         self.obstacle_counter += 1
         self.cloud_counter += 1
-        self.game_score += 1
+
+        if self.speed_counter % 4 == 0:
+            self.game_score += 1
 
         # increase Gamespeed
         if self.speed_counter % 1000 == 0:
@@ -151,7 +153,7 @@ class GA_Dino_Game(DinoGame):
             # fitter - if not ... well you know the game
             # 30% of the populations do not evolve over longer periods of time
             # --> Threshold at 80 generations.
-            if max(self.high_score) < 10000 and self.generation >= 80:
+            if max(self.high_score) < 2000 and self.generation >= 80:
 
                 # Reset game environment and
                 # generates a completly new population
@@ -261,14 +263,14 @@ class GA_Dino_Game(DinoGame):
 
         apex_dino_properties = np.load('save/apex_dino.npy')[()]
 
-        # all dinos
+        # all dinos-list
         for dino in self.all_dinos:
             dino.brain.W1 = apex_dino_properties['W1']
             dino.brain.b1 = apex_dino_properties['b1']
             dino.brain.W2 = apex_dino_properties['W2']
             dino.brain.b2 = apex_dino_properties['b2']
 
-        # active dinos
+        # active dinos-list
         for dino in self.active_dinos:
             dino.brain.W1 = apex_dino_properties['W1']
             dino.brain.b1 = apex_dino_properties['b1']
