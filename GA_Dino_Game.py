@@ -25,7 +25,7 @@ class GA_Dino_Game(DinoGame):
             self.fittest_dinos = []
 
             # create a new dino population
-            self.population = 150
+            self.population = 1000
             self.generation = 0
             self.active_dinos, self.all_dinos = ga.create_new_population(self.population)
 
@@ -238,21 +238,21 @@ class GA_Dino_Game(DinoGame):
 
         self.reset_game(True)
 
+        def insert_one_apex_dino_in_population(apex_dino_properties, dino_lst):
+
+            apex_dino = dino_lst[0]
+
+            apex_dino.brain.W1 = apex_dino_properties['W1']
+            apex_dino.brain.b1 = apex_dino_properties['b1']
+            apex_dino.brain.W2 = apex_dino_properties['W2']
+            apex_dino.brain.b2 = apex_dino_properties['b2']
+
+            dino_lst[0] = apex_dino
+
         apex_dino_properties = np.load('save/apex_dino.npy')[()]
 
-        # all dinos-list
-        for dino in self.all_dinos:
-            dino.brain.W1 = apex_dino_properties['W1']
-            dino.brain.b1 = apex_dino_properties['b1']
-            dino.brain.W2 = apex_dino_properties['W2']
-            dino.brain.b2 = apex_dino_properties['b2']
-
-        # active dinos-list
-        for dino in self.active_dinos:
-            dino.brain.W1 = apex_dino_properties['W1']
-            dino.brain.b1 = apex_dino_properties['b1']
-            dino.brain.W2 = apex_dino_properties['W2']
-            dino.brain.b2 = apex_dino_properties['b2']
+        insert_one_apex_dino_in_population(apex_dino_properties, self.all_dinos)
+        insert_one_apex_dino_in_population(apex_dino_properties, self.active_dinos)
 
     def reset_game(self, complete_init_flag):
         self.__init__(first_init = complete_init_flag)

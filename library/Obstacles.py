@@ -6,7 +6,7 @@ class Obstacle():
     def __init__(self, vel):
         self.x = 830
         self.vel = vel
-        self.path = os.getcwd() + '/' + 'Sprites' + '/'
+        self.path = os.getcwd() + '/' + 'sprites' + '/'
 
     def update(self):
         self.x -= self.vel

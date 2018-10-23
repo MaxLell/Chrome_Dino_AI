@@ -5,7 +5,7 @@ import os
 class Environment():
 
     def __init__(self):
-        self.path = os.getcwd() + '/' + 'Sprites' + '/'
+        self.path = os.getcwd() + '/' + 'sprites' + '/'
 
     def update(self):
         self.x -= self.vel

@@ -7,7 +7,7 @@ class Dino():
 
     def __init__(self):
 
-        self.path        = os.getcwd() + '/' + 'Sprites' + '/'
+        self.path        = os.getcwd() + '/' + 'sprites' + '/'
 
         # Image Section
         self.img_run     = [pg.image.load(self.path + 'dino_run_0.png'),
@@ -30,6 +30,7 @@ class Dino():
         # Init Dino Brain
         self.brain = Dino_Brain()
         self.mutation_rate = 0.05
+        self.mutation_magnitude = 0.03
 
         self.jump_count = 10
 
@@ -79,7 +80,7 @@ class Dino():
             for i in range(orig_shape[0]):
                 for j in range(orig_shape[1]):
                     if np.random.random() < self.mutation_rate:
-                        S[i,j] += np.random.randn() * 0.1
+                        S[i,j] += np.random.randn() * self.mutation_magnitude
 
             return S.reshape(orig_shape)
 
@@ -99,11 +100,8 @@ class Dino():
         return child
 
     def update(self, action):
-        # update the dino's state according to the selected action
-
-        # increment dino score
+        # update the dino's state and score according to the selected action
         self.score += 0.2
-
         # Run
         if action == 0 and not self.is_jumping:
             self.y = 237
@@ -112,7 +110,7 @@ class Dino():
 
         # Duck
         if action == 1 and not self.is_jumping:
-            self.score     -= 0.1 # Punish permanent ducking
+            self.score     -= 0.5 # Punish permanent ducking
             self.height     = 40
             self.width      = 79
             self.y          = 260
@@ -122,7 +120,7 @@ class Dino():
             self.is_jumping = True
 
         if self.is_jumping:
-            self.score -= 0.5 # Punish permaent jumping
+            self.score -= 0.7 # Punish permanent jumping
             self.width = 59
             self.height = 63
             if self.jump_count >= -10:
