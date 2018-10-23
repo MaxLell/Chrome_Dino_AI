@@ -54,14 +54,11 @@ class Dino():
 
         observation_dict['dino_y'] = self.y / 400
         observation_dict['dino_y_vel'] = self.jump_count / 30
-        observation_dict['bias'] = np.random.randn() * 0.1
 
-        # place values in numpy array
         observation = np.array([observation_dict['distance_dino_obstcl_x'],
                                 observation_dict['obstcl_y'],
                                 observation_dict['dino_y'],
-                                observation_dict['dino_y_vel'],
-                                observation_dict['bias']])
+                                observation_dict['dino_y_vel']])
 
         return observation
 
@@ -82,7 +79,7 @@ class Dino():
             for i in range(orig_shape[0]):
                 for j in range(orig_shape[1]):
                     if np.random.random() < self.mutation_rate:
-                        S[i,j] += np.random.randn() * 0.5
+                        S[i,j] += np.random.randn() * 0.1
 
             return S.reshape(orig_shape)
 

@@ -29,10 +29,13 @@ class GA_Dino_Game(DinoGame):
             self.generation = 0
             self.active_dinos, self.all_dinos = ga.create_new_population(self.population)
 
-    def reset_game(self, complete_init_flag):
-        self.__init__(first_init = complete_init_flag)
-
     def step(self):
+
+        def collision_check(dino):
+            if len(self.obstacles) != 0:
+                obstacle_collided = self.obstacles[0].collide(dino)
+                if obstacle_collided:
+                    self.active_dinos.pop(self.active_dinos.index(dino))
 
         # 60 FPS
         if self.render_flag:
@@ -88,21 +91,13 @@ class GA_Dino_Game(DinoGame):
         # survive obstacle contact, even thought the population is heavily
         # decimated (usually 1 or 2 survive)
 
-        # 1. Collision Check
-        if len(self.obstacles) != 0:
-            for obstacle in self.obstacles:
-                for dino in self.active_dinos:
-                    obstacle_collided = obstacle.collide(dino)
-                    if obstacle_collided:
-                        self.active_dinos.pop(self.active_dinos.index(dino))
+        # Check for collisions
+        for dino in self.active_dinos:
+            collision_check(dino)
 
         for dino in self.active_dinos:
-
-            # 2. Collision Check
-            for obstacle in self.obstacles:
-                obstacle_collided = obstacle.collide(dino)
-                if obstacle_collided:
-                    self.active_dinos.pop(self.active_dinos.index(dino))
+            # Check for collisions
+            collision_check(dino)
 
             # Dinos sense enviroment
             observation = dino.sense_environment(self.obstacles)
@@ -113,13 +108,9 @@ class GA_Dino_Game(DinoGame):
             # Dinos act
             dino.update(action)
 
-            # 3. Collision Check
-            if len(self.obstacles) != 0:
-                for obstacle in self.obstacles:
-                    for dino in self.active_dinos:
-                        obstacle_collided = obstacle.collide(dino)
-                        if obstacle_collided:
-                            self.active_dinos.pop(self.active_dinos.index(dino))
+        # Check for collisions
+        for dino in self.active_dinos:
+            collision_check(dino)
 
         # All Dinos died -> Lets reproduce and generate a new generation!
         if len(self.active_dinos) == 0:
@@ -145,26 +136,12 @@ class GA_Dino_Game(DinoGame):
             # mate and set up the next generation!
             self.all_dinos, self.active_dinos = ga.create_next_generation(self.population, dino_mating_pool)
 
-        if len(self.high_score) > 0:
-
-            # Meteor:
-            # Mass extinction - The previous population did never get fit enough
-            # lets bring in the meteor!! + create a new population, which is propably
-            # fitter - if not ... well you know the game
-            # 30% of the populations do not evolve over longer periods of time
-            # --> Threshold at 80 generations.
-            if max(self.high_score) < 2000 and self.generation >= 80:
-
-                # Reset game environment and
-                # generates a completly new population
-                self.reset_game(complete_init_flag = True)
-
-            # Want to save the best model? --> Press "s"
-            if self.save_flag:
-                self.save_flag = False
-                self.save_model()
-                self.save_draw_flag = True
-                self.save_render_counter = 100
+        # Want to save the current model? --> Press "s"
+        if self.save_flag and len(self.high_score) > 0:
+            self.save_flag = False
+            self.save_model()
+            self.save_draw_flag = True
+            self.save_render_counter = 100
 
         # Want to load the previously saved model? --> Press "l"
         if self.load_flag:
@@ -276,6 +253,9 @@ class GA_Dino_Game(DinoGame):
             dino.brain.b1 = apex_dino_properties['b1']
             dino.brain.W2 = apex_dino_properties['W2']
             dino.brain.b2 = apex_dino_properties['b2']
+
+    def reset_game(self, complete_init_flag):
+        self.__init__(first_init = complete_init_flag)
 
 if __name__ == '__main__':
     # main

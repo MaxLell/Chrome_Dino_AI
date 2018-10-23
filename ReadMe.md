@@ -22,8 +22,6 @@ __Genetic-algorithm-version__ `GA_Dino_game.py`:
 - Press __"l"__ to load a previously saved model. By default the package is provided with a pretrained Dino that you can load (score 19000).
 - Press __"SPACE"__ to toggle the visualisation. By deactivating the visualisation the code runs faster and therefore the Dinos evolve faster, to obtain higher scores.
 
-The current population of the programm consists of 150 different Dinos. It might happen that it takes many generations until these evolve to surpass the 2000 score-mark. Therefore, if the score at generation 80 is lower then 2000 the game resets itself with a completly new population ("__Meteor - Event__"). This usually occurs in 3 / 10 cases. This stagnation could be avoided by increasing the population to at least 1000, but the code gets very slow, by doing so.
-
 ## Dependencies:
 
 - numpy
