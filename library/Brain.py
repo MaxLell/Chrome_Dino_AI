@@ -4,9 +4,9 @@ class Dino_Brain():
 
     def __init__(self):
 
-        # One Input Layer, one Hidden Layer, One Outputl Layer
+        # One Input Layer, one Hidden Layer, One Output Layer
         self.n_x = 4
-        self.n_h = 7
+        self.n_h = 4
         self.n_y = 3
 
         # Random Initialize Weights and Biases

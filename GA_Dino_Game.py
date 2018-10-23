@@ -25,9 +25,9 @@ class GA_Dino_Game(DinoGame):
             self.fittest_dinos = []
 
             # create a new dino population
-            self.population = 1000
+            self.population_size = 1000
             self.generation = 0
-            self.active_dinos, self.all_dinos = ga.create_new_population(self.population)
+            self.active_dinos, self.all_dinos = ga.create_new_population(self.population_size)
 
     def step(self):
 
@@ -134,7 +134,7 @@ class GA_Dino_Game(DinoGame):
             self.fittest_dinos.append(dino_mating_pool[0])
 
             # mate and set up the next generation!
-            self.all_dinos, self.active_dinos = ga.create_next_generation(self.population, dino_mating_pool)
+            self.all_dinos, self.active_dinos = ga.create_next_generation(self.population_size, dino_mating_pool)
 
         # Want to save the current model? --> Press "s"
         if self.save_flag and len(self.high_score) > 0:
@@ -152,8 +152,9 @@ class GA_Dino_Game(DinoGame):
 
     def render(self):
         font = pg.font.SysFont('arial', 15)
-        self.window.fill((236,240,241))
+
         if self.render_flag:
+            self.window.fill((236,240,241))
 
             # Rendering Screen
             if self.cloud_counter == self.cloud_threshold:
@@ -191,19 +192,30 @@ class GA_Dino_Game(DinoGame):
             if len(self.high_score) > 0:
                 high = font.render('Total Highscore: ' + str(max(self.high_score)), True, (0,0,0))
                 self.window.blit(high, (370,10))
-        else:
+
+        elif self.speed_counter % 20 == 0:
+            self.window.fill((236,240,241))
+
             # No Rendering Screen
-            bla = font.render('Press SPACE to toggle Game-Rendering (faster without)', True, (0,0,0))
             a = 135
             b = 285
+
+            bla = font.render('Press SPACE to toggle Game-Rendering (runs faster without)', True, (0,0,0))
             self.window.blit(bla, (b,a))
-            g_c = font.render('Current Score: ' + str(self.game_score), True, (0,0,0))
-            self.window.blit(g_c, (b,a+20))
+
             gen = font.render('Generation: ' + str(self.generation), True, (0,0,0))
-            self.window.blit(gen, (b,a+40))
+            self.window.blit(gen, (b,a+20))
+
+            if len(self.active_dinos) > 0:
+                dino_number = font.render('Dinos alive: ' + str(len(self.active_dinos)), True, (0,0,0))
+                self.window.blit(dino_number, (b,a+40))
+
+            g_c = font.render('Current Score: ' + str(self.game_score), True, (0,0,0))
+            self.window.blit(g_c, (b,a+60))
+
             if len(self.high_score) > 0:
                 high = font.render('Total Highscore: ' + str(max(self.high_score)), True, (0,0,0))
-                self.window.blit(high, (b,a+60))
+                self.window.blit(high, (b,a+80))
 
         # Print Successful Save
         if self.save_draw_flag or self.save_render_counter > 0:

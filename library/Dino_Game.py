@@ -9,7 +9,7 @@ from Obstacles import *
 from Background import *
 
 class DinoGame():
-    
+
     def __init__(self):
 
         # Set screen parameters
@@ -103,5 +103,5 @@ class DinoGame():
 
         pg.display.quit()
         pg.quit()
-        print(self.game_score)
+        print('Current score:',self.game_score)
         exit()

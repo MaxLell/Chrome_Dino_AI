@@ -29,8 +29,6 @@ class Dino():
 
         # Init Dino Brain
         self.brain = Dino_Brain()
-        self.mutation_rate = 0.05
-        self.mutation_magnitude = 0.03
 
         self.jump_count = 10
 
@@ -63,54 +61,19 @@ class Dino():
 
         return observation
 
-    def crossover(self, sexy_dino_girl): # Crossover
-        # split genome in half - one half from father, one half from mother
-        # have incredible sexy time
-
-        # if you do not generate a deep copy of these variables
-        # the values do never get mutated -> the evolution stagnates.
-        W1 = np.copy(sexy_dino_girl.brain.W1)
-        b1 = np.copy(self.brain.b1)
-        W2 = np.copy(self.brain.W2)
-        b2 = np.copy(sexy_dino_girl.brain.b2)
-
-        # mutate genome
-        def mutate(S):
-            orig_shape = S.shape
-            for i in range(orig_shape[0]):
-                for j in range(orig_shape[1]):
-                    if np.random.random() < self.mutation_rate:
-                        S[i,j] += np.random.randn() * self.mutation_magnitude
-
-            return S.reshape(orig_shape)
-
-        W1 = mutate(W1)
-        b1 = mutate(b1)
-        W2 = mutate(W2)
-        b2 = mutate(b2)
-
-        child = Dino()
-
-        # create a small variation in child_brain
-        child.brain.W1 = W1
-        child.brain.b1 = b1
-        child.brain.W2 = W2
-        child.brain.b2 = b2
-
-        return child
-
     def update(self, action):
         # update the dino's state and score according to the selected action
         self.score += 0.2
         # Run
         if action == 0 and not self.is_jumping:
+            self.score += 1
             self.y = 237
             self.width = 59
             self.height = 63
 
         # Duck
         if action == 1 and not self.is_jumping:
-            self.score     -= 0.5 # Punish permanent ducking
+            self.score     -= 2 # Punish permanent ducking
             self.height     = 40
             self.width      = 79
             self.y          = 260
