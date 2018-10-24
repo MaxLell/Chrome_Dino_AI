@@ -6,7 +6,7 @@ class Dino_Brain():
 
         # One Input Layer, one Hidden Layer, One Output Layer
         self.n_x = 4
-        self.n_h = 4
+        self.n_h = 7
         self.n_y = 3
 
         # Random Initialize Weights and Biases
@@ -27,7 +27,7 @@ class Dino_Brain():
             a1 = relu(z1)
             z2 = np.dot(self.W2, a1) + self.b2
             a2 = relu(z2)
-            return a2.argmax()
+            return np.argmax(a2)
 
         # make sure input array comes in the right shape
         x = x.reshape(self.n_x, 1)

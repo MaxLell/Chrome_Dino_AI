@@ -22,7 +22,6 @@ class GA_Dino_Game(DinoGame):
             self.load_draw_flag = False
 
             self.high_score = []
-            self.fittest_dinos = []
 
             # create a new dino population
             self.population_size = 1000
@@ -56,13 +55,6 @@ class GA_Dino_Game(DinoGame):
             # "ESCAPE" closes the Window
             if key[pg.K_ESCAPE]:
                 self.close()
-            # "s" triggers saving the model
-            if key[pg.K_s]:
-                self.save_flag = True
-            # "l" triggers loading the model and
-            # generating a population out of it
-            if key[pg.K_l]:
-                self.load_flag = True
 
         # increment counters
         self.speed_counter += 1
@@ -114,6 +106,7 @@ class GA_Dino_Game(DinoGame):
 
         # All Dinos died -> Lets reproduce and generate a new generation!
         if len(self.active_dinos) == 0:
+
             # increment generation counter
             self.generation += 1
 
@@ -130,25 +123,8 @@ class GA_Dino_Game(DinoGame):
             dino_mating_pool = []
             dino_mating_pool = ga.create_mating_pool(self.all_dinos)
 
-            # Add fittest Dino to the fittest_dino_list
-            self.fittest_dinos.append(dino_mating_pool[0])
-
             # mate and set up the next generation!
             self.all_dinos, self.active_dinos = ga.create_next_generation(self.population_size, dino_mating_pool)
-
-        # Want to save the current model? --> Press "s"
-        if self.save_flag and len(self.high_score) > 0:
-            self.save_flag = False
-            self.save_model()
-            self.save_draw_flag = True
-            self.save_render_counter = 100
-
-        # Want to load the previously saved model? --> Press "l"
-        if self.load_flag:
-            self.load_flag = False
-            self.load_model()
-            self.load_draw_flag = True
-            self.load_render_counter = 100
 
     def render(self):
         font = pg.font.SysFont('arial', 15)
@@ -194,77 +170,25 @@ class GA_Dino_Game(DinoGame):
                 self.window.blit(high, (370,10))
 
         elif self.speed_counter % 20 == 0:
-            self.window.fill((236,240,241))
-
             # No Rendering Screen
             a = 135
             b = 285
+            self.window.fill((236,240,241))
 
             bla = font.render('Press SPACE to toggle Game-Rendering (runs faster without)', True, (0,0,0))
             self.window.blit(bla, (b,a))
-
             gen = font.render('Generation: ' + str(self.generation), True, (0,0,0))
             self.window.blit(gen, (b,a+20))
-
             if len(self.active_dinos) > 0:
                 dino_number = font.render('Dinos alive: ' + str(len(self.active_dinos)), True, (0,0,0))
                 self.window.blit(dino_number, (b,a+40))
-
             g_c = font.render('Current Score: ' + str(self.game_score), True, (0,0,0))
             self.window.blit(g_c, (b,a+60))
-
             if len(self.high_score) > 0:
                 high = font.render('Total Highscore: ' + str(max(self.high_score)), True, (0,0,0))
                 self.window.blit(high, (b,a+80))
 
-        # Print Successful Save
-        if self.save_draw_flag or self.save_render_counter > 0:
-            self.save_draw_flag = False
-            self.save_render_counter -= 1
-            txt_save = font.render('Best Dino saved', True, (0,0,0))
-            self.window.blit(txt_save, (10, 320))
-
-        # Print Successful Load
-        if self.load_draw_flag or self.load_render_counter > 0:
-            self.load_draw_flag = False
-            self.load_render_counter -= 1
-            txt_load = font.render('Best Previous Dino loaded', True, (0,0,0))
-            self.window.blit(txt_load, (600, 320))
-
         pg.display.update()
-
-    def save_model(self):
-        apex_dino_properties = {}
-
-        # The best of the fittest Dinos of each Generation
-        apex_dino = sorted(self.fittest_dinos, key = lambda dino: dino.fitness)[::-1][0]
-
-        apex_dino_properties['W1'] = apex_dino.brain.W1
-        apex_dino_properties['b1'] = apex_dino.brain.b1
-        apex_dino_properties['W2'] = apex_dino.brain.W2
-        apex_dino_properties['b2'] = apex_dino.brain.b2
-
-        np.save('save/apex_dino.npy', apex_dino_properties)
-
-    def load_model(self):
-
-        self.reset_game(True)
-
-        def insert_one_apex_dino_in_population(apex_dino_properties, dino_lst):
-
-            apex_dino = dino_lst[0]
-
-            apex_dino.brain.W1 = apex_dino_properties['W1']
-            apex_dino.brain.b1 = apex_dino_properties['b1']
-            apex_dino.brain.W2 = apex_dino_properties['W2']
-            apex_dino.brain.b2 = apex_dino_properties['b2']
-
-            dino_lst[0] = apex_dino
-
-        apex_dino_properties = np.load('save/apex_dino.npy')[()]
-
-        insert_one_apex_dino_in_population(apex_dino_properties, self.all_dinos)
-        insert_one_apex_dino_in_population(apex_dino_properties, self.active_dinos)
 
     def reset_game(self, complete_init_flag):
         self.__init__(first_init = complete_init_flag)

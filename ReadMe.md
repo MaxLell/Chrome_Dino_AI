@@ -1,6 +1,6 @@
 # Dino_Ai
 Reinforcement Learning via Neuro-Evolution.
-The Chrome Dino Game learns to play itself and to avoid the obstacles beyond human capabilities. If you want further explanation, please feel free to visit [my article on Medium](https://medium.com/@maximilian.lell/neuro-evolution-with-dinosaurs-1cfce5eadbd8)
+The Chrome Dino Game learns to play itself and to avoid the obstacles beyond human capabilities.
 
 ## Overview
 This package contains two versions of Google Chrome's famous Dino Game.
@@ -18,9 +18,7 @@ The game ends automatically once you got hit.
 
 
 __Genetic-algorithm-version__ `GA_Dino_game.py`:
-- Press __"s"__ to save the dino with the best score so far. The files are stored in the `/save` folder.
-- Press __"l"__ to load a previously saved model. By default the package is provided with a pretrained Dino that you can load (max score 19000).
-- Press __"SPACE"__ to toggle the visualisation. By deactivating the visualisation the code runs faster and therefore the Dinos evolve faster, to obtain higher scores.
+- Press __"SPACE"__ to toggle the visualisation. By deactivating the visualisation the code runs much faster and therefore the Dinos evolve faster.
 
 ## Dependencies:
 
@@ -30,6 +28,7 @@ __Genetic-algorithm-version__ `GA_Dino_game.py`:
 
 ## Sources:
 
+- [my article on Medium](https://medium.com/@maximilian.lell/neuro-evolution-with-dinosaurs-1cfce5eadbd8)
 - Google - Game Concept
 - Deeplearning.ai
 - The [Code Bullet Youtube Channel](https://youtu.be/sB_IGstiWlc)

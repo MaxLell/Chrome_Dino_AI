@@ -59,44 +59,26 @@ def create_next_generation(population_size, dino_mating_pool):
     all_dinos = []
     active_dinos = []
 
-    def crossover(dino_1, dino_2): # Crossover
+    def crossover(father_DNA, mother_DNA): # Crossover
         # split genome in half - one half from father, one half from mother
-        # have incredible sexy time
 
-        father_DNA = {}
-        mother_DNA = {}
-        child_DNA  = {}
-
-        father_DNA['W1'] = np.copy(dino_1.brain.W1)
-        father_DNA['b1'] = np.copy(dino_1.brain.b1)
-        father_DNA['W2'] = np.copy(dino_1.brain.W2)
-        father_DNA['b2'] = np.copy(dino_1.brain.b2)
-
-        mother_DNA['W1'] = np.copy(dino_2.brain.W1)
-        mother_DNA['b1'] = np.copy(dino_2.brain.b1)
-        mother_DNA['W2'] = np.copy(dino_2.brain.W2)
-        mother_DNA['b2'] = np.copy(dino_2.brain.b2)
-
-        child_DNA['W1'] = np.copy(dino_1.brain.W1)
-        child_DNA['b1'] = np.copy(dino_1.brain.b1)
-        child_DNA['W2'] = np.copy(dino_1.brain.W2)
-        child_DNA['b2'] = np.copy(dino_1.brain.b2)
+        crossover_DNA  = {}
 
         for index in father_DNA.keys():
+            # create a Deep copy of the father's DNA, so that the crossover_DNA
+            # has the same shape as the former Generation
+            crossover_DNA[index] = np.copy(father_DNA[index])
+
             orig_shape = father_DNA[index].shape
             for i in range(orig_shape[0]):
                 for j in range(orig_shape[1]):
                     if np.random.random() < 0.5:
-                        child_DNA[index][i,j] = mother_DNA[index][i,j]
+                        crossover_DNA[index][i,j] = mother_DNA[index][i,j]
 
-        return child_DNA
+        return crossover_DNA
 
     def mutate(DNA):# Mutate
 
-        mutation_rate = 0.05
-        mutation_magnitude = 0.03
-
-        # mutate genome
         def mutate_genome(S):
             orig_shape = S.shape
             for i in range(orig_shape[0]):
@@ -106,23 +88,47 @@ def create_next_generation(population_size, dino_mating_pool):
 
             return S.reshape(orig_shape)
 
-        child = Dino()
+        mutation_rate = 0.05
+        mutation_magnitude = 0.1
 
-        # create a small variation in child_brain #
-        child.brain.W1 = mutate_genome(DNA['W1'])
-        child.brain.b1 = mutate_genome(DNA['b1'])
-        child.brain.W2 = mutate_genome(DNA['W2'])
-        child.brain.b2 = mutate_genome(DNA['b2'])
+        mutated_DNA = {}
 
-        return child
+        for i in DNA.keys():
+            mutated_DNA[i] = mutate_genome(DNA[i])
+
+        return mutated_DNA
 
     for i in range(population_size):
+
+        # select random mating partners
         a = np.random.randint(0, len(dino_mating_pool))
         b = np.random.randint(0, len(dino_mating_pool))
 
-        # Crossover and Mutation in the dino.mate function
-        child_DNA = crossover(dino_mating_pool[a], dino_mating_pool[b])
-        child = mutate(child_DNA)
+        # Crossover and Mutation
+        father_DNA = {}
+
+        father_DNA['W1'] = np.copy(dino_mating_pool[a].brain.W1)
+        father_DNA['b1'] = np.copy(dino_mating_pool[a].brain.b1)
+        father_DNA['W2'] = np.copy(dino_mating_pool[a].brain.W2)
+        father_DNA['b2'] = np.copy(dino_mating_pool[a].brain.b2)
+
+        mother_DNA = {}
+        mother_DNA['W1'] = np.copy(dino_mating_pool[b].brain.W1)
+        mother_DNA['b1'] = np.copy(dino_mating_pool[b].brain.b1)
+        mother_DNA['W2'] = np.copy(dino_mating_pool[b].brain.W2)
+        mother_DNA['b2'] = np.copy(dino_mating_pool[b].brain.b2)
+
+        crossover_DNA = crossover(father_DNA, mother_DNA)
+        child_DNA     = mutate(crossover_DNA)
+
+        # create a new child
+        child = Dino()
+
+        # inherit crossover-mutated DNA
+        child.brain.W1 = child_DNA['W1']
+        child.brain.b1 = child_DNA['b1']
+        child.brain.W2 = child_DNA['W2']
+        child.brain.b2 = child_DNA['b2']
 
         all_dinos.append(child)
         active_dinos.append(child)

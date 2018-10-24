@@ -63,7 +63,6 @@ class Dino():
 
     def update(self, action):
         # update the dino's state and score according to the selected action
-        self.score += 0.2
         # Run
         if action == 0 and not self.is_jumping:
             self.score += 1
@@ -73,7 +72,7 @@ class Dino():
 
         # Duck
         if action == 1 and not self.is_jumping:
-            self.score     -= 2 # Punish permanent ducking
+            self.score     += 0.3 # Punish permanent ducking
             self.height     = 40
             self.width      = 79
             self.y          = 260
@@ -83,7 +82,7 @@ class Dino():
             self.is_jumping = True
 
         if self.is_jumping:
-            self.score -= 0.7 # Punish permanent jumping
+            self.score += 0.1 # Punish permanent jumping
             self.width = 59
             self.height = 63
             if self.jump_count >= -10:
