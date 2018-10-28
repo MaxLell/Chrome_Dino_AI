@@ -39,32 +39,20 @@ class Human_Dino_Game(DinoGame):
 
         self.clock.tick(self.FPS)
 
-        # Prevent Window from freezing, when dragging screen
         for event in pg.event.get():
             if event.type == pg.QUIT:
                 self.close()
 
-        # increment counters
-        self.speed_counter += 1
-        self.obstacle_counter += 1
-        self.cloud_counter += 1
+        self.increment_counters()
+        self.increment_gamespeed()
 
-        if self.speed_counter % 4 == 0:
-            self.game_score += 1
+        self.add_clouds()
+        self.add_obstacle()
+        self.add_ground()
 
-        # increase Gamespeed
-        if self.speed_counter % 1000 == 0:
-            self.vel += 1
-            self.speed_counter = 0
-
-        # Add new obstacle
-        if self.obstacle_counter == self.obstacle_threshold:
-            self.add_obstacle()
-            self.obstacle_counter = 0
-            self.obstacle_threshold = np.random.randint(40,60)
-
-        # move obstacle
         self.update_obstacles()
+        self.update_ground()
+        self.update_clouds()
 
         # read action from keyboard
         action = self.action_from_keyboard()
@@ -84,20 +72,10 @@ class Human_Dino_Game(DinoGame):
         self.window.fill((236,240,241))
 
         # Grounds
-        self.add_ground()
-        self.update_ground()
-
         for i in self.grounds:
             i.draw(self.window)
 
         # Clouds
-        if self.cloud_counter == self.cloud_threshold:
-            self.add_clouds()
-            self.cloud_threshold = np.random.randint(70,120)
-            self.cloud_counter = 0
-
-        self.update_clouds()
-
         for i in self.clouds:
             i.draw(self.window)
 
@@ -118,7 +96,10 @@ class Human_Dino_Game(DinoGame):
 if __name__ == '__main__':
     # main
     env = Human_Dino_Game()
+
     while True:
+
         env.step()
         env.render()
+
     env.close()

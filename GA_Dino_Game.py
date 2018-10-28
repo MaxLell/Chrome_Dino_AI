@@ -12,15 +12,6 @@ class GA_Dino_Game(DinoGame):
 
         if first_init == True:
             self.render_flag = False
-
-            self.save_flag = False
-            self.save_render_counter = 0
-            self.save_draw_flag = False
-
-            self.load_flag = False
-            self.load_render_counter = 0
-            self.load_draw_flag = False
-
             self.high_score = []
 
             # create a new dino population
@@ -40,43 +31,22 @@ class GA_Dino_Game(DinoGame):
         if self.render_flag:
             self.clock.tick(self.FPS)
 
-        # Prevent Window from freezing, when dragging screen
         for event in pg.event.get():
             if event.type == pg.QUIT:
                 self.close()
 
             key = pg.key.get_pressed()
+
             # "SPACE" toggles Rendering
             if key[pg.K_SPACE]:
-                if self.render_flag == False:
-                    self.render_flag = True
-                else:
-                    self.render_flag = False
+                self.render_flag = not self.render_flag
+                
             # "ESCAPE" closes the Window
             if key[pg.K_ESCAPE]:
                 self.close()
 
-        # increment counters
-        self.speed_counter += 1
-        self.obstacle_counter += 1
-        self.cloud_counter += 1
-
-        if self.speed_counter % 4 == 0:
-            self.game_score += 1
-
-        # increase Gamespeed
-        if self.speed_counter % 1000 == 0:
-            self.vel += 1
-            self.speed_counter = 0
-
-        # Add new obstacle
-        if self.obstacle_counter == self.obstacle_threshold:
-            self.add_obstacle()
-            self.obstacle_counter = 0
-            self.obstacle_threshold = np.random.randint(40,60)
-
-        # move obstacle
-        self.update_obstacles()
+        self.increment_counters()
+        self.increment_gamespeed()
 
         # check obstacle collision 3 times! <- pygame bug or implementation bug
         # Only one collision check results in letting some dinos of a population
@@ -88,16 +58,9 @@ class GA_Dino_Game(DinoGame):
             collision_check(dino)
 
         for dino in self.active_dinos:
-            # Check for collisions
             collision_check(dino)
-
-            # Dinos sense enviroment
             observation = dino.sense_environment(self.obstacles)
-
-            # Dinos think about what they've seen and select an action
             action = dino.brain.think_about_action(observation)
-
-            # Dinos act
             dino.update(action)
 
         # Check for collisions
@@ -113,9 +76,6 @@ class GA_Dino_Game(DinoGame):
             # Add current gamescore to Highscore list
             self.high_score.append(self.game_score)
 
-            # Reset game environment
-            self.reset_game(complete_init_flag = False)
-
             # calcualte fitness for each dino
             self.all_dinos = ga.calculate_fitness(self.all_dinos)
 
@@ -123,8 +83,19 @@ class GA_Dino_Game(DinoGame):
             dino_mating_pool = []
             dino_mating_pool = ga.create_mating_pool(self.all_dinos)
 
-            # mate and set up the next generation!
             self.all_dinos, self.active_dinos = ga.create_next_generation(self.population_size, dino_mating_pool)
+
+            # Reset game environment
+            self.reset_game(complete_init_flag = False)
+
+        self.add_obstacle()
+        self.update_obstacles()
+
+        if self.render_flag:
+            self.add_clouds()
+            self.add_ground()
+            self.update_ground()
+            self.update_clouds()
 
     def render(self):
         font = pg.font.SysFont('arial', 15)
@@ -132,33 +103,18 @@ class GA_Dino_Game(DinoGame):
         if self.render_flag:
             self.window.fill((236,240,241))
 
-            # Rendering Screen
-            if self.cloud_counter == self.cloud_threshold:
-                self.add_clouds()
-                self.cloud_threshold = np.random.randint(70,120)
-                self.cloud_counter = 0
-
-            self.add_ground()
-            self.update_clouds()
-            self.update_ground()
-
-            # Grounds
             for i in self.grounds:
                 i.draw(self.window)
 
-            # Clouds
             for i in self.clouds:
                 i.draw(self.window)
 
-            # Obstacles
             for i in self.obstacles:
                 i.draw(self.window)
 
-            # Dinos
             for i in self.active_dinos:
                 i.draw(self.window)
 
-            # high_score
             g_c = font.render('Current Score: ' + str(self.game_score), True, (0,0,0))
             self.window.blit(g_c, (580,10))
             d_a = font.render('Dinos alive : ' + str(len(self.active_dinos)), True, (0,0,0))
@@ -170,7 +126,6 @@ class GA_Dino_Game(DinoGame):
                 self.window.blit(high, (370,10))
 
         elif self.speed_counter % 20 == 0:
-            # No Rendering Screen
             a = 135
             b = 285
             self.window.fill((236,240,241))

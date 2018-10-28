@@ -24,10 +24,10 @@ class DinoGame():
         self.game_score = 0
 
         # game incrementors
-        self.cloud_counter    = 50
+        self.cloud_counter    = 60
         self.cloud_threshold    = np.random.randint(60,100)
         self.obstacle_counter = 0
-        self.obstacle_threshold = np.random.randint(70,90)
+        self.obstacle_threshold = np.random.randint(40,80)
         self.speed_counter = 0
 
         # game object lists
@@ -41,7 +41,11 @@ class DinoGame():
         self.add_obstacle()
 
     def add_clouds(self):
-        self.clouds.append(Cloud())
+
+        if self.cloud_counter == self.cloud_threshold:
+            self.clouds.append(Cloud())
+            self.cloud_threshold = np.random.randint(70,120)
+            self.cloud_counter = 0
 
     def add_ground(self):
 
@@ -53,11 +57,18 @@ class DinoGame():
             self.grounds.append(Ground(self.disp_x, self.vel))
 
     def add_obstacle(self):
-        r = random.randrange(0,4)
-        if r < 2:
-            self.obstacles.append(Cactus(vel = self.vel))
-        else:
-            self.obstacles.append(Ptera (vel = self.vel))
+
+        # Add new obstacle
+        if self.obstacle_counter == self.obstacle_threshold:
+
+            r = random.randrange(0,4)
+            if r < 2:
+                self.obstacles.append(Cactus(vel = self.vel))
+            else:
+                self.obstacles.append(Ptera (vel = self.vel))
+
+            self.obstacle_counter = 0
+            self.obstacle_threshold = np.random.randint(40,80)
 
     def update_obstacles(self):
         # update obstacles
@@ -92,6 +103,21 @@ class DinoGame():
             # remove ground once it is off-screen
             if i.x < (i.width * -1):
                 self.grounds.pop(self.grounds.index(i))
+
+    def increment_counters(self):
+        # increment counters
+        self.speed_counter += 1
+        self.obstacle_counter += 1
+        self.cloud_counter += 1
+
+        if self.speed_counter % 4 == 0:
+            self.game_score += 1
+
+    def increment_gamespeed(self):
+        # increase Gamespeed
+        if self.speed_counter % 1000 == 0:
+            self.vel += 2
+            self.speed_counter = 0
 
     def step(self):
         pass
