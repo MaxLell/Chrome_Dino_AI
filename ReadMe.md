@@ -1,6 +1,5 @@
 # Dino_Ai
-Reinforcement Learning via Neuro-Evolution.
-The Chrome Dino Game learns to play itself and to avoid the obstacles beyond human capabilities.
+An artificial intelligence learns to play Google Chrome's Browser Dino Game, by itself, via Neuroevolution.
 
 ## Overview
 This package contains two versions of Google Chrome's famous Dino Game.
