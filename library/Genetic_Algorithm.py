@@ -45,11 +45,11 @@ def create_mating_pool(all_dinos):
         for i in range(f):
             mating_pool.append(dino)
 
-    # # Sort mating pool by dino's fitness. Fittest dino becomes first element
-    # mating_pool = sorted(mating_pool, key = lambda dino: dino.fitness)[::-1]
-    #
-    # # natural selection: only the top 25% survive
-    # mating_pool = mating_pool[0:(len(mating_pool) // 4)]
+    # Sort mating pool by dino's fitness. Fittest dino becomes first element
+    mating_pool = sorted(mating_pool, key = lambda dino: dino.fitness)[::-1]
+
+    # natural selection: only the top 25% survive
+    mating_pool = mating_pool[0:(len(mating_pool) // 4)]
 
     return mating_pool
 

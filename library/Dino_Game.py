@@ -19,6 +19,7 @@ class DinoGame():
         self.FPS        = 60
         pg.display.set_caption('Dino_game')
         self.window     = pg.display.set_mode((self.disp_x, self.disp_y))
+        self.window_color = (247,247,247)
         self.clock      = pg.time.Clock()
 
         self.game_score = 0

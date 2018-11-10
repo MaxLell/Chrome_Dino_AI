@@ -14,6 +14,10 @@ class Obstacle():
     def draw(self, window):
         pass
 
+    def draw_hitbox(self, window):
+        pg.draw.rect(window, self.color,
+                     (self.x,self.y,self.width,self.height),1)
+
     def collide(self, dino):
         if pg.Rect(self.x,
                    self.y,
@@ -46,8 +50,7 @@ class Cactus(Obstacle):
         window.blit(pg.transform.scale(self.curr_cactus, (self.width, self.height)), (self.x, self.y))
 
         # draw hitbox
-        pg.draw.rect(window, self.color,
-                     (self.x,self.y,self.width,self.height),1)
+        self.draw_hitbox(window)
 
 class Ptera(Obstacle):
 
@@ -72,5 +75,4 @@ class Ptera(Obstacle):
         self.frame += 1
 
         # draw hitbox
-        pg.draw.rect(window, self.color,
-                     (self.x,self.y,self.width,self.height), 1)
+        self.draw_hitbox(window)

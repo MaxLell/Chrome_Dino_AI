@@ -18,6 +18,8 @@ class Dino():
         self.frame_run    = 0
         self.frame_duck   = 0
 
+        self.color = (41,128,185)
+
         # Property Section
         self.x           = 50
         self.y           = 237
@@ -109,6 +111,11 @@ class Dino():
             self.is_running = False
             self.is_ducking = False
 
+        def draw_hitbox(window):
+            pg.draw.rect(window, self.color,
+                         (self.x,self.y,self.width,self.height), 1)
+
+
         # Jumping Animation
         if self.y < 237 or self.is_jumping:
             window.blit(pg.transform.scale(self.img_run[0], (59,63)), (self.x, self.y))
@@ -128,8 +135,7 @@ class Dino():
             self.frame_run += 1
 
         # Draw Dino Hitbox
-        pg.draw.rect(window, (41,128,185),
-                     (self.x,self.y,self.width,self.height), 1)
+        draw_hitbox(window)
 
 
         reset(self)

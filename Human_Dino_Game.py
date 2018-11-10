@@ -43,7 +43,7 @@ class Human_Dino_Game(DinoGame):
             if event.type == pg.QUIT:
                 self.close()
 
-        self.increment_counters() 
+        self.increment_counters()
         self.increment_gamespeed()
 
         self.add_clouds()
@@ -69,7 +69,7 @@ class Human_Dino_Game(DinoGame):
     def render(self):
 
         # Background
-        self.window.fill((236,240,241))
+        self.window.fill(self.window_color)
 
         # Grounds
         for i in self.grounds:

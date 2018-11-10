@@ -101,7 +101,7 @@ class GA_Dino_Game(DinoGame):
         font = pg.font.SysFont('arial', 15)
 
         if self.render_flag:
-            self.window.fill((236,240,241))
+            self.window.fill(self.window_color)
 
             for i in self.grounds:
                 i.draw(self.window)
@@ -125,10 +125,10 @@ class GA_Dino_Game(DinoGame):
                 high = font.render('Total Highscore: ' + str(max(self.high_score)), True, (0,0,0))
                 self.window.blit(high, (370,10))
 
-        elif self.speed_counter % 20 == 0:
+        elif self.speed_counter % 40 == 0:
             a = 135
             b = 285
-            self.window.fill((236,240,241))
+            self.window.fill(self.window_color)
 
             bla = font.render('Press SPACE to toggle Game-Rendering (runs faster without)', True, (0,0,0))
             self.window.blit(bla, (b,a))
