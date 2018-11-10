@@ -27,7 +27,7 @@ class DinoGame():
         self.cloud_counter    = 60
         self.cloud_threshold    = np.random.randint(60,100)
         self.obstacle_counter = 0
-        self.obstacle_threshold = np.random.randint(40,80)
+        self.obstacle_threshold = np.random.randint(40,60)
         self.speed_counter = 0
 
         # game object lists

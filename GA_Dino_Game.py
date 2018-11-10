@@ -40,7 +40,7 @@ class GA_Dino_Game(DinoGame):
             # "SPACE" toggles Rendering
             if key[pg.K_SPACE]:
                 self.render_flag = not self.render_flag
-                
+
             # "ESCAPE" closes the Window
             if key[pg.K_ESCAPE]:
                 self.close()
@@ -59,7 +59,7 @@ class GA_Dino_Game(DinoGame):
 
         for dino in self.active_dinos:
             collision_check(dino)
-            observation = dino.sense_environment(self.obstacles)
+            observation = dino.sense_environment(self.obstacles, self.vel)
             action = dino.brain.think_about_action(observation)
             dino.update(action)
 

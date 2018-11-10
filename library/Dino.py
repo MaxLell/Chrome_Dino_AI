@@ -30,14 +30,16 @@ class Dino():
         # Init Dino Brain
         self.brain = Dino_Brain()
 
-        self.jump_count = 10
+        self.jump_count_const = 8
+        self.jump_count_running_variable = self.jump_count_const
+
 
         # Dino states
         self.is_running = True
         self.is_ducking = False
         self.is_jumping = False
 
-    def sense_environment(self, obstacles):
+    def sense_environment(self, obstacles, speed):
 
         # inputs for NN
         observation_dict = {}
@@ -52,12 +54,15 @@ class Dino():
             observation_dict['obstcl_y'] = (obstacles[0].y) / 400
 
         observation_dict['dino_y'] = self.y / 400
-        observation_dict['dino_y_vel'] = self.jump_count / 30
+        observation_dict['dino_y_vel'] = self.jump_count_running_variable / 30
+
+        observation_dict['game_speed'] = speed / 200
 
         observation = np.array([observation_dict['distance_dino_obstcl_x'],
                                 observation_dict['obstcl_y'],
                                 observation_dict['dino_y'],
-                                observation_dict['dino_y_vel']])
+                                observation_dict['dino_y_vel'],
+                                observation_dict['game_speed']])
 
         return observation
 
@@ -72,7 +77,7 @@ class Dino():
 
         # Duck
         if action == 1 and not self.is_jumping:
-            self.score     += 0.3 # Punish permanent ducking
+            self.score     += 0.2 # Punish permanent ducking
             self.height     = 40
             self.width      = 79
             self.y          = 260
@@ -85,15 +90,15 @@ class Dino():
             self.score += 0.1 # Punish permanent jumping
             self.width = 59
             self.height = 63
-            if self.jump_count >= -10:
+            if self.jump_count_running_variable >= -self.jump_count_const:
                 neg = 1
-                if self.jump_count < 0:
+                if self.jump_count_running_variable < 0:
                     neg = -1
-                self.y -= np.power(np.abs(self.jump_count), 1.85) * 0.5 * neg
-                self.jump_count -= 0.7
+                self.y -= np.power(np.abs(self.jump_count_running_variable), 2) * 0.5 * neg
+                self.jump_count_running_variable -= 0.7
             else:
                 self.is_jumping = False
-                self.jump_count = 10
+                self.jump_count_running_variable = self.jump_count_const
                 self.width = 59
                 self.height = 63
                 self.y = 237

@@ -43,7 +43,7 @@ class Human_Dino_Game(DinoGame):
             if event.type == pg.QUIT:
                 self.close()
 
-        self.increment_counters()
+        self.increment_counters() 
         self.increment_gamespeed()
 
         self.add_clouds()
