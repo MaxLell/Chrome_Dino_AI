@@ -69,7 +69,7 @@ class DinoGame():
                 self.obstacles.append(Ptera (vel = self.vel))
 
             self.obstacle_counter = 0
-            self.obstacle_threshold = np.random.randint(40,80)
+            self.obstacle_threshold = np.random.randint(40,60)
 
     def update_obstacles(self):
         # update obstacles

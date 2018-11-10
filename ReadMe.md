@@ -5,19 +5,19 @@ The Chrome Dino Game learns to play itself and to avoid the obstacles beyond hum
 ## Overview
 This package contains two versions of Google Chrome's famous Dino Game.
 
-1. One Version can be played by Humans (Run `Human_Dino_Game.py`). You can compare yourself with the trained model.
-2. The other version trains and plays itself by Reinforcement Learning (Run `GA_Dino_Game.py`). Its core algorithm is based on Neuro-Evolution Algorithms (Genetic Algorithms applied on Neural Networks - more Info in "Sources")
+1. One Version can be played by Humans (Run `Human_DinoGame.py`). You can compare yourself with the trained model.
+2. The other version trains and plays itself by Reinforcement Learning (Run `AI_DinoGame.py`). Its core algorithm is based on Neuro-Evolution Algorithms (Genetic Algorithms applied on Neural Networks - more Info in "Sources")
 
 ## Usage
 
-__Human-playable-version__ `Human_Dino_Game.py`:
+__Human-playable-version__ `Human_DinoGame.py`:
 - Press __"SPACE"__ to jump over an obstacle
 - Press __"KEYDOWN"__ to duck under a Ptera dinosaur.
 
 The game ends automatically once you got hit.
 
 
-__Genetic-algorithm-version__ `GA_Dino_game.py`:
+__Genetic-algorithm-version__ `AI_DinoGame.py`:
 - Press __"SPACE"__ to toggle the visualisation. By deactivating the visualisation the code runs much faster and therefore the Dinos evolve faster.
 
 ## Dependencies:

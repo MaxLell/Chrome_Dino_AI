@@ -87,7 +87,7 @@ class Human_Dino_Game(DinoGame):
         self.dino.draw(self.window)
 
         # Score
-        font = pg.font.SysFont('arial', 15)
+        font = pg.font.SysFont('arial' , 15)
         text = font.render('Score: ' + str(self.game_score), True, (0,0,0))
         self.window.blit(text, (580,10))
 

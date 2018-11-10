@@ -79,7 +79,7 @@ class Dino():
 
         # Duck
         if action == 1 and not self.is_jumping:
-            self.score     += 0.2 # Punish permanent ducking
+            self.score     += 0.3 # Punish permanent ducking
             self.height     = 40
             self.width      = 79
             self.y          = 260
