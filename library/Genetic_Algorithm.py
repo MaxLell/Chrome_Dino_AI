@@ -60,16 +60,15 @@ def create_next_generation(population_size, dino_mating_pool):
     active_dinos = []
 
     def crossover(father_DNA, mother_DNA): # Crossover
-        # split genome in half - one half from father, one half from mother
 
         crossover_DNA  = {}
+
+        heritage_percentage = np.random.randint(11)*0.1
 
         for index in father_DNA.keys():
             # create a Deep copy of the father's DNA, so that the crossover_DNA
             # has the same shape as the former Generation
             crossover_DNA[index] = np.copy(father_DNA[index])
-
-            heritage_percentage = np.random.randint(11)*0.1
 
             orig_shape = father_DNA[index].shape
             for i in range(orig_shape[0]):
