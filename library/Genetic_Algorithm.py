@@ -48,8 +48,8 @@ def create_mating_pool(all_dinos):
     # Sort mating pool by dino's fitness. Fittest dino becomes first element
     mating_pool = sorted(mating_pool, key = lambda dino: dino.fitness)[::-1]
 
-    # natural selection: only the top 25% survive
-    mating_pool = mating_pool[0:(len(mating_pool) // 4)]
+    # natural selection: only the top 10% "survive" and are allowed to breed
+    mating_pool = mating_pool[0:(len(mating_pool) // 10)]
 
     return mating_pool
 
@@ -69,10 +69,12 @@ def create_next_generation(population_size, dino_mating_pool):
             # has the same shape as the former Generation
             crossover_DNA[index] = np.copy(father_DNA[index])
 
+            heritage_percentage = np.random.randint(11)*0.1
+
             orig_shape = father_DNA[index].shape
             for i in range(orig_shape[0]):
                 for j in range(orig_shape[1]):
-                    if np.random.random() < 0.5:
+                    if np.random.random() < heritage_percentage:
                         crossover_DNA[index][i,j] = mother_DNA[index][i,j]
 
         return crossover_DNA
@@ -84,7 +86,7 @@ def create_next_generation(population_size, dino_mating_pool):
             for i in range(orig_shape[0]):
                 for j in range(orig_shape[1]):
                     if np.random.random() < mutation_rate:
-                        S[i,j] += np.random.randn() * mutation_magnitude
+                        S[i,j] = np.random.randn() * mutation_magnitude
 
             return S.reshape(orig_shape)
 
@@ -94,7 +96,7 @@ def create_next_generation(population_size, dino_mating_pool):
         mutated_DNA = {}
 
         for i in DNA.keys():
-            mutated_DNA[i] = mutate_genome(DNA[i])
+            mutated_DNA[i] = mutate_genome(np.copy(DNA[i]))
 
         return mutated_DNA
 
