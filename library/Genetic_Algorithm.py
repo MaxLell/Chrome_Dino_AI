@@ -1,6 +1,3 @@
-# All steps can be related to the algorithms proposed in the book
-# "The Nature of Code - Chapter 9: Genetic Algorithms"
-
 import numpy as np
 from Dino import *
 
@@ -39,6 +36,11 @@ def create_mating_pool(all_dinos):
     # represented in the mating pool. Therefore it will be selected
     # more often for reproduction (Step 3)
 
+    # The creation of the this mating_pool leads to an exponential split in
+    # fitness. The fittest dinos are exponentially represented. Therefore in the
+    # long run, when only few Dinos make it far, only these will be able to
+    # reproduce.
+
     mating_pool = []
     for dino in all_dinos:
         f = int(dino.fitness * len(all_dinos) * 10)
@@ -60,6 +62,9 @@ def create_next_generation(population_size, dino_mating_pool):
     active_dinos = []
 
     def crossover(father_DNA, mother_DNA): # Crossover
+        # Due to the design of the create_mating_pool-function crossover becomes
+        # more and more insignificant. At the end only clones of the same dinos
+        # mate.
 
         crossover_DNA  = {}
 
@@ -90,11 +95,17 @@ def create_next_generation(population_size, dino_mating_pool):
             return S.reshape(orig_shape)
 
         mutation_rate = 0.05
+        # A higher mutation_rate leads to longer
+        # stagnation at the beginning, but leads to faster game progressing in the long
+        # run (fewer Dinos survive up until the higher tiers). A lower mutation_rate
+        # leads to faster initial progress, but to slower longterm progress.
+        # Any mutation_rate higher then 0.09 leads to longterm stagnation.
+
         mutation_magnitude = 0.1
 
         mutated_DNA = {}
 
-        for i in DNA.keys():
+        for i in DNA.keys(): # Mutate the DNA
             mutated_DNA[i] = mutate_genome(np.copy(DNA[i]))
 
         return mutated_DNA
@@ -107,17 +118,13 @@ def create_next_generation(population_size, dino_mating_pool):
 
         # Crossover and Mutation
         father_DNA = {}
-
-        father_DNA['W1'] = np.copy(dino_mating_pool[a].brain.W1)
-        father_DNA['b1'] = np.copy(dino_mating_pool[a].brain.b1)
-        father_DNA['W2'] = np.copy(dino_mating_pool[a].brain.W2)
-        father_DNA['b2'] = np.copy(dino_mating_pool[a].brain.b2)
-
         mother_DNA = {}
-        mother_DNA['W1'] = np.copy(dino_mating_pool[b].brain.W1)
-        mother_DNA['b1'] = np.copy(dino_mating_pool[b].brain.b1)
-        mother_DNA['W2'] = np.copy(dino_mating_pool[b].brain.W2)
-        mother_DNA['b2'] = np.copy(dino_mating_pool[b].brain.b2)
+
+        for i in dino_mating_pool[0].brain.neural_wiring.keys():
+            # The father's and the mother's DNA (neural wiring) are copied from the selected
+            # Dinos from the dino_mating_pool.
+            father_DNA[i] = np.copy(dino_mating_pool[a].brain.neural_wiring[i])
+            mother_DNA[i] = np.copy(dino_mating_pool[b].brain.neural_wiring[i])
 
         crossover_DNA = crossover(father_DNA, mother_DNA)
         child_DNA     = mutate(crossover_DNA)
@@ -126,10 +133,8 @@ def create_next_generation(population_size, dino_mating_pool):
         child = Dino()
 
         # inherit crossover-mutated DNA
-        child.brain.W1 = child_DNA['W1']
-        child.brain.b1 = child_DNA['b1']
-        child.brain.W2 = child_DNA['W2']
-        child.brain.b2 = child_DNA['b2']
+        for i in child.brain.neural_wiring.keys():
+            child.brain.neural_wiring[i] = child_DNA[i]
 
         all_dinos.append(child)
         active_dinos.append(child)

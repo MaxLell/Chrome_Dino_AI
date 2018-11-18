@@ -10,10 +10,11 @@ class Dino_Brain():
         self.n_y = 3
 
         # Random Initialize Weights and Biases
-        self.W1 = np.random.randn(self.n_h, self.n_x) * 0.1
-        self.b1 = np.random.randn(self.n_h, 1) * 0.1
-        self.W2 = np.random.randn(self.n_y, self.n_h) * 0.1
-        self.b2 = np.random.randn(self.n_y, 1) * 0.1
+        self.neural_wiring = {}
+        self.neural_wiring['W1'] = np.random.randn(self.n_h, self.n_x) * 0.1
+        self.neural_wiring['b1'] = np.random.randn(self.n_h, 1) * 0.1
+        self.neural_wiring['W2'] = np.random.randn(self.n_y, self.n_h) * 0.1
+        self.neural_wiring['b2'] = np.random.randn(self.n_y, 1) * 0.1
 
     def think_about_action(self, x):
 
@@ -23,9 +24,9 @@ class Dino_Brain():
 
         # Feed current observations into Feed Forward Neural Network
         def feed_forward_nn(x):
-            z1 = np.dot(self.W1, x) + self.b1
+            z1 = np.dot(self.neural_wiring['W1'], x) + self.neural_wiring['b1']
             a1 = relu(z1)
-            z2 = np.dot(self.W2, a1) + self.b2
+            z2 = np.dot(self.neural_wiring['W2'], a1) + self.neural_wiring['b2']
             a2 = relu(z2)
             return np.argmax(a2)
 

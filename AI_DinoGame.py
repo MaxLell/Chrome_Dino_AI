@@ -22,6 +22,7 @@ class GA_Dino_Game(DinoGame):
     def step(self):
 
         def collision_check(dino):
+            # Function to check whether the Dino has collided an obstacle
             if len(self.obstacles) != 0:
                 obstacle_collided = self.obstacles[0].collide(dino)
                 if obstacle_collided:
@@ -29,13 +30,14 @@ class GA_Dino_Game(DinoGame):
 
         # 60 FPS
         if self.render_flag:
-            self.clock.tick(self.FPS)
+            self.clock.tick(self.FPS) # set Render FPS
 
         for event in pg.event.get():
+            # Create event for window close button
             if event.type == pg.QUIT:
                 self.close()
 
-            key = pg.key.get_pressed()
+            key = pg.key.get_pressed() # get keyboard presses
 
             # "SPACE" toggles Rendering
             if key[pg.K_SPACE]:
@@ -59,9 +61,9 @@ class GA_Dino_Game(DinoGame):
 
         for dino in self.active_dinos:
             collision_check(dino)
-            observation = dino.sense_environment(self.obstacles, self.vel)
-            action = dino.brain.think_about_action(observation)
-            dino.update(action)
+            observation = dino.sense_environment(self.obstacles, self.vel) # observe environment
+            action = dino.brain.think_about_action(observation) # act based on your knowledge
+            dino.update(action) # update the dino based on his action
 
         # Check for collisions
         for dino in self.active_dinos:
@@ -70,7 +72,7 @@ class GA_Dino_Game(DinoGame):
         # All Dinos died -> Lets reproduce and generate a new generation!
         if len(self.active_dinos) == 0:
 
-            # increment generation counter
+            # increment generation counter and append it to the generation_list
             self.generation += 1
 
             # Add current gamescore to Highscore list
@@ -83,14 +85,17 @@ class GA_Dino_Game(DinoGame):
             dino_mating_pool = []
             dino_mating_pool = ga.create_mating_pool(self.all_dinos)
 
+            # create the next generation
             self.all_dinos, self.active_dinos = ga.create_next_generation(self.population_size, dino_mating_pool)
 
             # Reset game environment
             self.reset_game(complete_init_flag = False)
 
+        # add occasionally a new obstacle and move them
         self.add_obstacle()
         self.update_obstacles()
 
+        # it is only required during the rendering to create clouds and grounds
         if self.render_flag:
             self.add_clouds()
             self.add_ground()
@@ -115,6 +120,7 @@ class GA_Dino_Game(DinoGame):
             for i in self.active_dinos:
                 i.draw(self.window)
 
+            # Print display text
             g_c = font.render('Current Score: ' + str(self.game_score), True, (0,0,0))
             self.window.blit(g_c, (580,10))
             d_a = font.render('Dinos alive : ' + str(len(self.active_dinos)), True, (0,0,0))
@@ -130,6 +136,7 @@ class GA_Dino_Game(DinoGame):
             b = 285
             self.window.fill(self.window_color)
 
+            # print display text
             bla = font.render('Press SPACE to toggle Game-Rendering (runs faster without)', True, (0,0,0))
             self.window.blit(bla, (b,a))
             gen = font.render('Generation: ' + str(self.generation), True, (0,0,0))
